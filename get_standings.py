@@ -3,7 +3,7 @@ import pandas as pd
 import logging
 
 logging.basicConfig(
-    filename='./logs/2024_standings.log', level=logging.INFO,
+    filename='./logs/get_standings.log', level=logging.INFO,
     format= '[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s',
     datefmt='%Y-%m-%d   %H:%M:%S'
 )  
@@ -69,7 +69,6 @@ def specific_season_standings(json_season_standings):
         flattened_data.append(flattened_entry)
 
     df_rider_standings = pd.DataFrame(flattened_data)
-    logger.info('Successfully created df from json')
 
     df_rider_standings['diff_to_first'] = df_rider_standings['points'] - df_rider_standings['points'].max()
     df_rider_standings['diff_to_next'] = df_rider_standings['points'] - df_rider_standings['points'].shift(1)
@@ -108,6 +107,7 @@ def all_seasons_standings(json_season_info, category_id):
         print(i)
             
     df_all_seasons = pd.concat(list_all_seasons, ignore_index=True)
+    logger.info(f'DataFrame with all seasons created')
     return df_all_seasons
 
 
