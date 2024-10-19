@@ -1,0 +1,19 @@
+# ignore all logs, env
+*.log
+*.env
+
+# ignore .env
+.env
+
+# ignore DDBB and data folders
+DDBB
+data
+
+# ignore notebooks
+*.ipynb
+
+# ignore pycache
+__pycache__/
+
+# ignore ddbb_draft.txt
+ddbb_draft.txt
