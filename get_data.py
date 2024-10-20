@@ -1,7 +1,15 @@
 # Get data from MotoGP API and store it in tables as csv
 import requests
+import logging
 import pandas as pd
 from datetime import date
+
+logging.basicConfig(
+    filename='./logs/get_standings.log', level=logging.INFO,
+    format= '[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d   %H:%M:%S'
+)  
+logger = logging.getLogger(__name__)
 
 
 ######################### VARIABLES ###########################
@@ -36,6 +44,7 @@ def request_api(base_url, endpoint):
         data = response.json()
     else:
         print(f"Failed to retrieve data. Status code: {response.status_code}")
+        data = []
 
     return data
 
@@ -152,9 +161,13 @@ def rtc(seasons_info, category_id, start_year=1949, end_year=date.today().year):
 
     # Save riders, teams, constructors, and RTC data in csv
     df_all_seasons_riders.to_csv(out_riders, index=False, sep=';')
+    logger.info(f"Riders data saved in {out_riders}")
     df_all_seasons_teams.to_csv(out_teams, index=False, sep=';')
+    logger.info(f"Teams data saved in {out_teams}")
     df_all_seasons_constructors.to_csv(out_constructors, index=False, sep=';')
+    logger.info(f"Constructors data saved in {out_constructors}")
     df_all_seasons_RTC.to_csv(out_riders_teams_constructors, index=False, sep=';')
+    logger.info(f"RTC data saved in {out_riders_teams_constructors}")
 
 
 ######################### MAIN ###########################
