@@ -17,3 +17,6 @@ __pycache__/
 
 # ignore ddbb_draft.txt
 ddbb_draft.txt
+
+# ignore old scripts
+old_scripts
