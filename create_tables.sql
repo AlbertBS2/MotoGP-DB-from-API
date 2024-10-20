@@ -71,7 +71,7 @@ CREATE TABLE results (
 results_id VARCHAR(255) NOT NULL,
 position INT,
 average_speed DECIMAL(4, 1),
-gap_to_first DECIMAL(6, 3),
+gap_to_first DECIMAL(8, 3),
 total_laps INT,
 total_time VARCHAR(50),
 points DECIMAL(4, 2),
