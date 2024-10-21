@@ -73,7 +73,10 @@ def specific_season_standings(json_season_standings):
 def all_seasons_standings(json_season_info, category_id, start_year=1949, end_year=date.today().year):
     """
     Args:
-        json_season_info (json): json containing the season basic information for a specific MotoGP season
+        json_season_info (list): json containing the season basic information for a specific MotoGP season
+        category_id (str): 
+        start_year (int): year from which you want to get the data
+        end_year (int): year until which you want to get the data
     
     Returns:
         df_all_seasons: DataFrame with the rider standings of all MotoGP seasons
@@ -103,13 +106,47 @@ def all_seasons_standings(json_season_info, category_id, start_year=1949, end_ye
     logger.info(f'DataFrame with all seasons created')
     return df_all_seasons
 
+def fetch_new_standings(out_filename, json_season_info, category_id, start_year=1949, end_year=date.today().year):
+    """
+    Requests data from the API and fetches it to the data already stored on the csv
+
+    Args:
+        json_season_info (list): json containing the season basic information for a specific MotoGP season
+        category_id (str): 
+        start_year (int): year from which you want to get the data
+        end_year (int): year until which you want to get the data
+    
+    Returns:
+        Saves updated data to the same csv
+    """
+    # Extract data from start_year into a DataFrame
+    new_standings_df = all_seasons_standings(json_season_info=json_season_info, category_id=category_id, start_year=start_year, end_year=end_year)
+    
+    # Load existing data from CSV
+    existing_standings_df = pd.read_csv(out_filename, sep=';', encoding='unicode_escape')
+
+    # Find new data that is not already in the CSV
+    updated_standings_df = pd.concat([existing_standings_df, new_standings_df]).drop_duplicates()
+
+    # Save updated data back to the CSV
+    updated_standings_df.to_csv(out_filename, index=False, sep=';')
+
 
 ######################### LAUNCH ###########################
 
+answer = input("Do you want to get all data and delete the existant or to fetch new data? (all/fetch): \n")
+answer2 = int(input("From which year?: \n"))
+answer3 = int(input("Until which year?: \n"))
+
 json_season_info = request_api(base_url, seasons_ep)
 
-df_all_seasons_standings_motogp = all_seasons_standings(json_season_info, category_id_motogp)
+if answer == 'all':
+    df_all_seasons_standings_motogp = all_seasons_standings(json_season_info, category_id_motogp, start_year=answer2, end_year=answer3)
 
-# Save the df as csv
-df_all_seasons_standings_motogp.to_csv(out_filename, index=False, sep=';')
-logger.info(f'Data stored in {out_filename}')
+    # Save the df as csv
+    df_all_seasons_standings_motogp.to_csv(out_filename, index=False, sep=';')
+    logger.info(f'Data stored in {out_filename}')
+
+elif answer == 'fetch':
+    # Add standings from specific seasons to an already existant csv
+    fetch_new_standings(out_filename, json_season_info, category_id_motogp, start_year=answer2, end_year=answer3)
