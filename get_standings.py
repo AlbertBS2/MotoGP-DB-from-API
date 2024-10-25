@@ -131,12 +131,48 @@ def fetch_new_standings(out_filename, json_season_info, category_id, start_year=
     # Save updated data back to the CSV
     updated_standings_df.to_csv(out_filename, index=False, sep=';')
 
+def read_standings_inputs():
+    """
+    Asks the user for input data and returns the answers.
+
+    Returns:
+        List with the 3 answers
+    """
+    while True:
+        try:
+            answer = input("Do you want to get all data and delete the existant or to fetch new data? (all/fetch): \n")
+            assert answer == 'all' or answer == 'fetch'
+            break
+        except AssertionError:
+            print('You should answer with "all" or "fetch"')
+
+    while True:
+        try:
+            answer2 = int(input("From which year?: \n"))
+            assert 1949 <= answer2 <= date.today().year
+            break
+        except ValueError:
+            print("Please enter a valid number")
+        except AssertionError:
+            print(f'Year must be between 1949 and {date.today().year}')
+
+    while True:
+        try:
+            answer3 = int(input("Until which year?: \n"))
+            assert answer2 <= answer3 <= date.today().year
+            break
+        except ValueError:
+            print("Please enter a valid number")
+        except AssertionError:
+            print(f'Year must be between {answer2} and {date.today().year}')
+    
+    return [answer, answer2, answer3]
+
 
 ######################### LAUNCH ###########################
 
-answer = input("Do you want to get all data and delete the existant or to fetch new data? (all/fetch): \n")
-answer2 = int(input("From which year?: \n"))
-answer3 = int(input("Until which year?: \n"))
+# Read inputs
+answer, answer2, answer3 = read_standings_inputs()
 
 json_season_info = request_api(base_url, seasons_ep)
 
