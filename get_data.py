@@ -5,7 +5,7 @@ import pandas as pd
 from datetime import date
 
 logging.basicConfig(
-    filename='./logs/get_standings.log', level=logging.INFO,
+    filename='./logs/get_data.log', level=logging.INFO,
     format= '[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s',
     datefmt='%Y-%m-%d   %H:%M:%S'
 )  
@@ -21,7 +21,7 @@ seasons_ep = 'seasons'
 out_riders = './data/riders.csv'
 out_teams = './data/teams.csv'
 out_constructors = './data/constructors.csv'
-out_riders_teams_constructors = './data/riders_teams_constructors.csv'
+out_RTC = './data/riders_teams_constructors.csv'
 
 
 ######################### FUNCTIONS ###########################
@@ -43,7 +43,7 @@ def request_api(base_url, endpoint):
         #print("Successfully retrieved data")
         data = response.json()
     else:
-        logger.info(f"Failed to retrieve data. Status code: {response.status_code}")
+        logger.warning(f"Failed to retrieve data. Status code: {response.status_code}")
         data = []
 
     return data
@@ -159,24 +159,111 @@ def rtc(seasons_info, category_id, start_year=1949, end_year=date.today().year):
     df_all_seasons_RTC = pd.concat(list_RTC, ignore_index=True)
     df_all_seasons_RTC = df_all_seasons_RTC.drop_duplicates()
 
-    # Save riders, teams, constructors, and RTC data in csv
-    df_all_seasons_riders.to_csv(out_riders, index=False, sep=';')
-    logger.info(f"Riders data saved in {out_riders}")
+    return [df_all_seasons_riders, df_all_seasons_teams, df_all_seasons_constructors, df_all_seasons_RTC]
 
-    df_all_seasons_teams.to_csv(out_teams, index=False, sep=';')
-    logger.info(f"Teams data saved in {out_teams}")
+def fetch_new_rtc(out_riders, out_teams, out_constructors, seasons_info, category_id, start_year=1949, end_year=date.today().year):
+    """
+    """
+    # Extract data from start_year until end_year into DataFrames
+    new_df_riders, new_df_teams, new_df_constructors, new_df_RTC = rtc(json_seasons_info, category_id_motogp, start_year=year_from, end_year=year_until)
 
-    df_all_seasons_constructors.to_csv(out_constructors, index=False, sep=';')
-    logger.info(f"Constructors data saved in {out_constructors}")
+    # Load existing data from CSV
+    existing_riders_df = pd.read_csv(out_riders, sep=';', encoding='unicode_escape')
+    logger.info(f"Existing data loaded from {out_riders}")
+
+    existing_teams_df = pd.read_csv(out_teams, sep=';', encoding='unicode_escape')
+    logger.info(f"Existing data loaded from {out_teams}")
+
+    existing_constructors_df = pd.read_csv(out_constructors, sep=';', encoding='unicode_escape')
+    logger.info(f"Existing data loaded from {out_constructors}")
+
+    existing_RTC_df = pd.read_csv(out_RTC, sep=';', encoding='unicode_escape')
+    logger.info(f"Existing data loaded from {out_RTC}")
+
+    # Find which of the new data is not already in the CSV
+    updated_riders_df = pd.concat([existing_riders_df, new_df_riders]).drop_duplicates()
+    updated_teams_df = pd.concat([existing_teams_df, new_df_teams]).drop_duplicates()
+    updated_constructors_df = pd.concat([existing_constructors_df, new_df_constructors]).drop_duplicates()
+    updated_RTC_df = pd.concat([existing_RTC_df, new_df_RTC]).drop_duplicates()
+
+    # Save updated data back to the CSV
+    updated_riders_df.to_csv(out_riders, index=False, sep=';')
+    logger.info(f"Updated data saved to {out_riders}")
+
+    updated_teams_df.to_csv(out_teams, index=False, sep=';')
+    logger.info(f"Updated data saved to {out_teams}")
+
+    updated_constructors_df.to_csv(out_constructors, index=False, sep=';')
+    logger.info(f"Updated data saved to {out_constructors}")
+
+    updated_RTC_df.to_csv(out_RTC, index=False, sep=';')
+    logger.info(f"Updated data saved to {out_RTC}")
+
+def read_standings_inputs():
+    """
+    Asks the user for input data and returns the answers.
+
+    Returns:
+        List with the 3 answers: all/fetch, year from, year until
+    """
+    while True:
+        try:
+            answer = input("Do you want to get all data and delete the existant or to fetch new data? (all/fetch): \n")
+            assert answer == 'all' or answer == 'fetch'
+            break
+        except AssertionError:
+            print('You should answer with "all" or "fetch"')
+
+    while True:
+        try:
+            answer2 = int(input("From which year?: \n"))
+            assert 1949 <= answer2 <= date.today().year
+            break
+        except ValueError:
+            print("Please enter a valid number")
+        except AssertionError:
+            print(f'Year must be between 1949 and {date.today().year}')
+
+    while True:
+        try:
+            answer3 = int(input("Until which year?: \n"))
+            assert answer2 <= answer3 <= date.today().year
+            break
+        except ValueError:
+            print("Please enter a valid number")
+        except AssertionError:
+            print(f'Year must be between {answer2} and {date.today().year}')
     
-    df_all_seasons_RTC.to_csv(out_riders_teams_constructors, index=False, sep=';')
-    logger.info(f"RTC data saved in {out_riders_teams_constructors}")
+    return [answer, answer2, answer3]
 
 
 ######################### MAIN ###########################
 
+# Read inputs
+all_or_fetch, year_from, year_until = read_standings_inputs()
+
 # Get seasons general info
 json_seasons_info = request_api(base_url, seasons_ep)
 
-# Get riders, teams, constructors, and RTC data and save as csv
-rtc(json_seasons_info, category_id_motogp)
+if all_or_fetch == 'all':
+    logger.info(f'Getting all data from {year_from} to {year_until} and overwriting the existant...')
+    # Get riders, teams, constructors, and RTC data
+    df_riders, df_teams, df_constructors, df_RTC = rtc(json_seasons_info, category_id_motogp, start_year=year_from, end_year=year_until)
+
+    # Save riders, teams, constructors, and RTC data in csv
+    df_riders.to_csv(out_riders, index=False, sep=';')
+    logger.info(f"Riders data saved in {out_riders}")
+
+    df_teams.to_csv(out_teams, index=False, sep=';')
+    logger.info(f"Teams data saved in {out_teams}")
+
+    df_constructors.to_csv(out_constructors, index=False, sep=';')
+    logger.info(f"Constructors data saved in {out_constructors}")
+    
+    df_RTC.to_csv(out_RTC, index=False, sep=';')
+    logger.info(f"RTC data saved in {out_RTC}")
+
+elif all_or_fetch == 'fetch':
+    logger.info(f'Fetching new data from {year_from} to {year_until}...')
+    # Add riders, teams, constructors, and RTC data from specific seasons to already existant csv
+    fetch_new_rtc(out_riders, out_teams, out_constructors, json_seasons_info, category_id_motogp, start_year=year_from, end_year=year_until)

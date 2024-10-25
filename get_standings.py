@@ -36,7 +36,7 @@ def request_api(base_url, endpoint):
     response = requests.get(base_url + endpoint)
 
     if response.status_code == 200:
-        logger.info("Successfully retrieved data")
+        #logger.info("Successfully retrieved data")
         data = response.json()
     else:
         logger.warning(f"Failed to retrieve data. Status code: {response.status_code}")
@@ -120,14 +120,14 @@ def fetch_new_standings(out_filename, json_season_info, category_id, start_year=
     Returns:
         Saves updated data to the same csv
     """
-    # Extract data from start_year into a DataFrame
+    # Extract data from start_year until end_year into a DataFrame
     new_standings_df = all_seasons_standings(json_season_info=json_season_info, category_id=category_id, start_year=start_year, end_year=end_year)
     
     # Load existing data from CSV
     existing_standings_df = pd.read_csv(out_filename, sep=';', encoding='unicode_escape')
-    logger.info(f"Existing data from {out_filename} loaded")
+    logger.info(f"Existing data loaded from {out_filename}")
 
-    # Find new data that is not already in the CSV
+    # Find which of the new data is not already in the CSV
     updated_standings_df = pd.concat([existing_standings_df, new_standings_df]).drop_duplicates()
 
     # Save updated data back to the CSV
@@ -139,7 +139,7 @@ def read_standings_inputs():
     Asks the user for input data and returns the answers.
 
     Returns:
-        List with the 3 answers
+        List with the 3 answers: all/fetch, year from, year until
     """
     while True:
         try:
@@ -175,18 +175,20 @@ def read_standings_inputs():
 ######################### MAIN ###########################
 
 # Read inputs
-answer, answer2, answer3 = read_standings_inputs()
+all_or_fetch, year_from, year_until = read_standings_inputs()
 
 json_season_info = request_api(base_url, seasons_ep)
 
-if answer == 'all':
+if all_or_fetch == 'all':
+    logger.info(f'Getting all data from {year_from} to {year_until} and overwriting the existant...')
     # Create df with all seasons standings
-    df_all_seasons_standings_motogp = all_seasons_standings(json_season_info, category_id_motogp, start_year=answer2, end_year=answer3)
+    df_all_seasons_standings_motogp = all_seasons_standings(json_season_info, category_id_motogp, start_year=year_from, end_year=year_until)
 
     # Save the df as csv
     df_all_seasons_standings_motogp.to_csv(out_filename, index=False, sep=';')
     logger.info(f'Data saved in {out_filename}')
 
-elif answer == 'fetch':
+elif all_or_fetch == 'fetch':
+    logger.info(f'Fetching new data from {year_from} to {year_until}...')
     # Add standings from specific seasons to an already existant csv
-    fetch_new_standings(out_filename, json_season_info, category_id_motogp, start_year=answer2, end_year=answer3)
+    fetch_new_standings(out_filename, json_season_info, category_id_motogp, start_year=year_from, end_year=year_until)
