@@ -1,3 +1,4 @@
+# Get standings data from MotoGP API and store it in tables as csv
 import requests
 import pandas as pd
 import logging
@@ -124,12 +125,14 @@ def fetch_new_standings(out_filename, json_season_info, category_id, start_year=
     
     # Load existing data from CSV
     existing_standings_df = pd.read_csv(out_filename, sep=';', encoding='unicode_escape')
+    logger.info(f"Existing data from {out_filename} loaded")
 
     # Find new data that is not already in the CSV
     updated_standings_df = pd.concat([existing_standings_df, new_standings_df]).drop_duplicates()
 
     # Save updated data back to the CSV
     updated_standings_df.to_csv(out_filename, index=False, sep=';')
+    logger.info(f"Updated data saved to {out_filename}")
 
 def read_standings_inputs():
     """
@@ -169,7 +172,7 @@ def read_standings_inputs():
     return [answer, answer2, answer3]
 
 
-######################### LAUNCH ###########################
+######################### MAIN ###########################
 
 # Read inputs
 answer, answer2, answer3 = read_standings_inputs()
@@ -177,11 +180,12 @@ answer, answer2, answer3 = read_standings_inputs()
 json_season_info = request_api(base_url, seasons_ep)
 
 if answer == 'all':
+    # Create df with all seasons standings
     df_all_seasons_standings_motogp = all_seasons_standings(json_season_info, category_id_motogp, start_year=answer2, end_year=answer3)
 
     # Save the df as csv
     df_all_seasons_standings_motogp.to_csv(out_filename, index=False, sep=';')
-    logger.info(f'Data stored in {out_filename}')
+    logger.info(f'Data saved in {out_filename}')
 
 elif answer == 'fetch':
     # Add standings from specific seasons to an already existant csv
