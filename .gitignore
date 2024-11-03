@@ -5,9 +5,8 @@
 # ignore .env
 .env
 
-# ignore DDBB and data folders
+# ignore DDBB folder
 DDBB
-data
 
 # ignore notebooks
 *.ipynb
@@ -20,3 +19,6 @@ ddbb_draft.txt
 
 # ignore old scripts
 old_scripts
+
+# ignore csv files in data folder
+data/*.csv
