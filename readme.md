@@ -21,7 +21,7 @@ This project focuses on collecting, storing, and processing MotoGP data using th
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/motogp-data-management.git
+   git clone https://github.com/yourusername/MotoGP-DDBB-from-API.git
    ```
   
 2. Install required Python libraries:
