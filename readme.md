@@ -53,7 +53,7 @@ This project focuses on collecting, storing, and processing MotoGP data using th
 2. Insert Data into MySQL Database
 
    ```bash
-   python import_data_to_ddbb.py
+   python import_data_to_db.py
    ```
 
 4. MySQL Table Creation
