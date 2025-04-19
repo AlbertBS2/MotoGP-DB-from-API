@@ -9,6 +9,9 @@ This project focuses on collecting, storing, and processing MotoGP data using th
 3. **`create_tables.sql`**: Contains SQL statements for creating the necessary tables in the MySQL database.
 4. **`/data/`**: Directory to store the generated CSV files.
 
+##
+![DIAGRAM](EER_Diagram.png)
+
 ## Prerequisites
 
 - Python 3.x
