@@ -8,7 +8,7 @@ from datetime import date
 base_url = 'https://api.motogp.pulselive.com/motogp/v1/results/'
 category_id_motogp = 'e8c110ad-64aa-4e8e-8a86-f2f152f6a942'
 
-out_filename = './data/sessions_test.csv'
+out_filename = './data/sessions.csv'
 
 events_csv = './data/events.csv'
 
@@ -128,11 +128,54 @@ def fetch_new_sessions(out_filename, events_csv, start_year=1949, end_year=date.
     updated_sessions_df.to_csv(out_filename, index=False, sep=';')
 
 
+def read_standings_inputs():
+    """
+    Asks the user for input data and returns the answers.
+
+    Returns:
+        List with the 3 answers: all/fetch, year from, year until
+    """
+    while True:
+        try:
+            answer = input("Do you want to get all data and delete the existant or to fetch new data? (all/fetch): \n")
+            assert answer == 'all' or answer == 'fetch'
+            break
+        except AssertionError:
+            print('You should answer with "all" or "fetch"')
+
+    while True:
+        try:
+            answer2 = int(input("From which year?: \n"))
+            assert 1949 <= answer2 <= date.today().year
+            break
+        except ValueError:
+            print("Please enter a valid number")
+        except AssertionError:
+            print(f'Year must be between 1949 and {date.today().year}')
+
+    while True:
+        try:
+            answer3 = int(input("Until which year?: \n"))
+            assert answer2 <= answer3 <= date.today().year
+            break
+        except ValueError:
+            print("Please enter a valid number")
+        except AssertionError:
+            print(f'Year must be between {answer2} and {date.today().year}')
+    
+    return [answer, answer2, answer3]
+
+
 ######################### LAUNCH ###########################
 
-# Get all sessions from all seasons and save it on a csv
-df_all_seasons_sessions_motogp = all_seasons_sessions(events_csv, start_year=2024)
-df_all_seasons_sessions_motogp.to_csv(out_filename, index=False, sep=';')
+# Read inputs
+all_or_fetch, year_from, year_until = read_standings_inputs()
 
-# Add sessions from specific seasons to an already existant csv
-#fetch_new_sessions(out_filename, events_csv, start_year=2024)
+if all_or_fetch == 'all':
+    # Get all sessions from all seasons and save it on a csv
+    df_all_seasons_sessions_motogp = all_seasons_sessions(events_csv, start_year=year_from, end_year=year_until)
+    df_all_seasons_sessions_motogp.to_csv(out_filename, index=False, sep=';')
+
+elif all_or_fetch == 'fetch':
+    # Add sessions from specific seasons to an already existant csv
+    fetch_new_sessions(out_filename, events_csv, start_year=year_from, end_year=year_until)
