@@ -7,17 +7,9 @@ This project focuses on collecting, storing, and processing MotoGP data using th
 1. **`get_data.py, get_events.py, get_sessions.py, get_results.py, get_standings.py`**: Fetches data from the MotoGP API and saves it into CSV files.
 2. **`import_data_to_db.py`**: Reads data from the CSV files and inserts it into the MySQL database.
 3. **`create_tables.sql`**: Contains SQL statements for creating the necessary tables in the MySQL database.
-4. **`/data/`**: Directory to store the generated CSV files.
 
 ##
 ![DIAGRAM](EER_Diagram.png)
-
-## Prerequisites
-
-- Python 3.x
-- MySQL server
-- Required Python libraries: `requests`, `pandas`, `pymysql`, `dotenv`
-- MySQL credentials stored in a `.env` file
 
 ## Installation
 
