@@ -6,7 +6,7 @@
 .env
 
 # ignore DDBB folder
-DDBB
+DB
 
 # ignore notebooks
 *.ipynb
