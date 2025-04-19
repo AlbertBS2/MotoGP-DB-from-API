@@ -60,17 +60,16 @@ def rtc(seasons_info, category_id, start_year=1949, end_year=date.today().year):
         end_year (int, optional): Filter seasons up to this year. Defaults to the current year.
 
     Returns:
-        None: The function saves the processed data into four CSV files:
-              - Riders
-              - Teams
-              - Constructors
-              - Riders, teams, and constructors connection table
+        Dataframes with data from the specified seasons for:
+            - Riders
+            - Teams
+            - Constructors
+            - Riders, teams, and constructors connection table
     """
     list_riders = []
     list_teams = []
     list_constructors = []
     list_RTC = []
-    i = 0
 
     for season in seasons_info:
         id = season['id']
@@ -140,8 +139,7 @@ def rtc(seasons_info, category_id, start_year=1949, end_year=date.today().year):
         df_season_RTC['season'] = year
         list_RTC.append(df_season_RTC)
 
-        i += 1
-        print(i)
+        print(year)
 
     # Concat riders df from all seasons
     df_all_seasons_riders = pd.concat(list_riders, ignore_index=True)
