@@ -14,8 +14,8 @@ DB
 # ignore pycache
 __pycache__/
 
-# ignore ddbb_draft.txt
-ddbb_draft.txt
+# ignore db_draft.txt
+db_draft.txt
 
 # ignore old scripts
 old_scripts
