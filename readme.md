@@ -44,21 +44,33 @@ This project focuses on collecting, storing, and processing MotoGP data using th
 
 1. Get Data from MotoGP API
 
-   Run the script get_data.py to fetch data from the MotoGP API and store it in CSV files. The script processes rider, team, constructor, and season standings data for all available seasons.
+   Run the scripts `get_data.py, get_events.py, get_sessions.py, get_results.py, get_standings.py` (in this order) to fetch data from the MotoGP API and store it in CSV files. The script processes data for all specified seasons.
 
    ```bash
    python get_data.py
    ```
+   ```bash
+   python get_events.py
+   ```
+   ```bash
+   python get_sessions.py
+   ```
+   ```bash
+   python get_results.py
+   ```
+   ```bash
+   python get_standinds.py
+   ```
 
-2. Insert Data into MySQL Database
+2. MySQL Table Creation
+
+   Before importing the data, you need to set up your MySQL database tables by running the create_table.sql file.
+
+3. Insert Data into MySQL Database
 
    ```bash
    python import_data_to_db.py
    ```
-
-4. MySQL Table Creation
-
-   Before importing the data, you need to set up your MySQL database tables by running the create_table.sql file.
 
 ## Important Notes
 
