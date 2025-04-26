@@ -45,7 +45,10 @@ def specific_results(json_session_results):
         flattened_entry ={
             'id': entry['id'],
             'position': entry['position'],
+            'best_lap_number': entry['best_lap']['number'] if entry.get('best_lap') else None,
+            'best_lap_time': entry['best_lap']['time'] if entry.get('best_lap') else None,
             'average_speed': entry['average_speed'] if entry.get('average_speed') else None,
+            'top_speed': entry['top_speed'] if entry.get('top_speed') else None,
             'gap_to_first': entry['gap']['first'] if entry.get('gap') else None,
             'total_laps': entry['total_laps'] if entry.get('total_laps') else None,
             'total_time': entry['time'] if entry.get('time') else None,
