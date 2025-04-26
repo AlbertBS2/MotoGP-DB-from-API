@@ -316,7 +316,10 @@ def insert_data_results(file, cursor):
                     ON DUPLICATE KEY UPDATE
                         results_id = VALUES(results_id),
                         position = VALUES(position),
+                        best_lap_number = VALUES(best_lap_number),
+                        best_lap_time = VALUES(best_lap_time),
                         average_speed = VALUES(average_speed),
+                        top_speed = VALUES(top_speed),
                         gap_to_first = VALUES(gap_to_first),
                         total_laps = VALUES(total_laps),
                         total_time = VALUES(total_time),
