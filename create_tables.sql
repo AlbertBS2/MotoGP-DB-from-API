@@ -70,7 +70,10 @@ FOREIGN KEY (constructor_id) REFERENCES constructors(constructor_id)
 CREATE TABLE results (
 results_id VARCHAR(255) NOT NULL,
 position INT,
+best_lap_number INT,
+best_lap_time VARCHAR(15),
 average_speed DECIMAL(4, 1),
+top_speed DECIMAL(4, 1),
 gap_to_first DECIMAL(8, 3),
 total_laps INT,
 total_time VARCHAR(50),
