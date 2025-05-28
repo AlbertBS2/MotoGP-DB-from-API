@@ -4,7 +4,7 @@
 
 This project focuses on collecting, storing, and processing MotoGP data using the MotoGP official API. Data will be gathered and stored in CSV files, and later imported into a MySQL database. The project is divided into three main sections:
 
-1. **`get_data.py, get_events.py, get_sessions.py, get_results.py, get_standings.py`**: Fetches data from the MotoGP API and saves it into CSV files.
+1. **`get_data.py, get_events.py, get_sessions.py, get_results.py, get_standings.py`**: Fetch data from the MotoGP API and save it into CSV files.
 2. **`import_data_to_db.py`**: Reads data from the CSV files and inserts it into the MySQL database.
 3. **`create_tables.sql`**: Contains SQL statements for creating the necessary tables in the MySQL database.
 
@@ -16,7 +16,7 @@ This project focuses on collecting, storing, and processing MotoGP data using th
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/MotoGP-DDBB-from-API.git
+   git clone https://github.com/AlbertBS2/MotoGP-DDBB-from-API.git
    ```
   
 2. Install required Python libraries:
@@ -59,7 +59,7 @@ This project focuses on collecting, storing, and processing MotoGP data using th
 
 2. MySQL Table Creation
 
-   Before importing the data, you need to set up your MySQL database tables by running the create_table.sql file.
+   Before importing the data, you need to set up your MySQL database tables by running the `create_table.sql` file.
 
 3. Insert Data into MySQL Database
 
@@ -69,7 +69,7 @@ This project focuses on collecting, storing, and processing MotoGP data using th
 
 ## Important Notes
 
-The API response might change over time. Adjustments to the get_data.py script might be necessary based on changes in the API or the data.
+The API response might change over time. Adjustments to the `get_data.py` script might be necessary based on changes in the API or the data.
 
 ## Project Acknowledgement
 
